@@ -20,7 +20,6 @@ where
     V: Serialize,
     S: BuildHasher,
 {
-    #[inline]
     fn serialize<T: Serializer>(&self, serializer: T) -> Result<T::Ok, T::Error> {
         let mut map_serializer = serializer.serialize_map(Some(self.len()))?;
         for (k, v) in self {
@@ -69,7 +68,6 @@ where
                 write!(formatter, "a map")
             }
 
-            #[inline]
             fn visit_map<M: MapAccess<'de>>(self, mut map: M) -> Result<Self::Value, M::Error> {
                 let mut values = LinkedHashMap::with_capacity_and_hasher(
                     map.size_hint().unwrap_or(0),
@@ -95,7 +93,6 @@ where
     T: Serialize + Eq + Hash,
     S: BuildHasher,
 {
-    #[inline]
     fn serialize<U: Serializer>(&self, serializer: U) -> Result<U::Ok, U::Error> {
         let mut seq_serializer = serializer.serialize_seq(Some(self.len()))?;
         for v in self {
@@ -141,7 +138,6 @@ where
                 write!(formatter, "a sequence")
             }
 
-            #[inline]
             fn visit_seq<SA: SeqAccess<'de>>(self, mut seq: SA) -> Result<Self::Value, SA::Error> {
                 let mut values = LinkedHashSet::with_capacity_and_hasher(
                     seq.size_hint().unwrap_or(0),
