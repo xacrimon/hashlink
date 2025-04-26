@@ -2089,7 +2089,7 @@ impl<T> OptNonNullExt<T> for Option<NonNull<T>> {
 unsafe fn ensure_guard_node<K, V>(head: &mut Option<NonNull<Node<K, V>>>) {
     #[cold]
     #[inline(never)]
-    unsafe fn initialize<K,V>(head: &mut Option<NonNull<Node<K, V>>>) {
+    unsafe fn initialize<K, V>(head: &mut Option<NonNull<Node<K, V>>>) {
         let mut p = NonNull::new_unchecked(Box::into_raw(Box::new(Node {
             entry: MaybeUninit::uninit(),
             links: Links {
