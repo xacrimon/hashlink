@@ -846,6 +846,7 @@ impl<'a, K, V, S> OccupiedEntry<'a, K, V, S> {
     /// entry's value with the given `value` parameter.
     ///
     /// Does *not* move the entry to the back of the internal linked list.
+    #[inline]
     pub fn replace_entry(mut self, value: V) -> (K, V) {
         let old_key = mem::replace(self.raw_entry.key_mut(), self.key);
         let old_value = mem::replace(self.raw_entry.get_mut(), value);
@@ -1168,7 +1169,6 @@ impl<'a, K, V, S> RawOccupiedEntryMut<'a, K, V, S> {
     }
 
     /// Returns a `CursorMut` over the current entry.
-    #[inline]
     pub fn cursor_mut(self) -> CursorMut<'a, K, V, S>
     where
         K: Eq + Hash,
@@ -1212,7 +1212,6 @@ impl<'a, K, V, S> RawVacantEntryMut<'a, K, V, S> {
         self.insert_with_hasher(hash, key, value, |k| hash_key(hash_builder, k))
     }
 
-    #[inline]
     pub fn insert_with_hasher(
         self,
         hash: u64,
@@ -1787,7 +1786,6 @@ impl<K, V, S> CursorMut<'_, K, V, S> {
     }
 
     // Inserts an element immediately before the given `before` node.
-    #[inline]
     fn insert(&mut self, key: K, value: V, before: NonNull<Node<K, V>>) -> Option<V>
     where
         K: Eq + Hash,
@@ -2091,7 +2089,8 @@ impl<T> OptNonNullExt<T> for Option<NonNull<T>> {
 // Allocate a circular list guard node if not present.
 #[inline]
 unsafe fn ensure_guard_node<K, V>(head: &mut Option<NonNull<Node<K, V>>>) {
-    if head.is_none() {
+    #[cold]
+    unsafe fn initialize<K,V>(head: &mut Option<NonNull<Node<K, V>>>) {
         let mut p = NonNull::new_unchecked(Box::into_raw(Box::new(Node {
             entry: MaybeUninit::uninit(),
             links: Links {
@@ -2103,6 +2102,10 @@ unsafe fn ensure_guard_node<K, V>(head: &mut Option<NonNull<Node<K, V>>>) {
         })));
         p.as_mut().links.value = ValueLinks { next: p, prev: p };
         *head = Some(p);
+    }
+
+    if head.is_none() {
+        initialize(head);
     }
 }
 
@@ -2169,7 +2172,6 @@ unsafe fn allocate_node<K, V>(free_list: &mut Option<NonNull<Node<K, V>>>) -> No
 }
 
 // Given node is assumed to be the guard node and is *not* dropped.
-#[inline]
 unsafe fn drop_value_nodes<K, V>(guard: NonNull<Node<K, V>>) {
     let mut cur = guard.as_ref().links.value.prev;
     while cur != guard {
@@ -2182,7 +2184,6 @@ unsafe fn drop_value_nodes<K, V>(guard: NonNull<Node<K, V>>) {
 
 // Drops all linked free nodes starting with the given node.  Free nodes are only non-circular
 // singly linked, and should have uninitialized keys / values.
-#[inline]
 unsafe fn drop_free_nodes<K, V>(mut free: Option<NonNull<Node<K, V>>>) {
     while let Some(some_free) = free {
         let next_free = some_free.as_ref().links.free.next;
@@ -2210,7 +2211,6 @@ where
     hash_key(s, node.as_ref().key_ref())
 }
 
-#[inline]
 fn hash_key<S, Q>(s: &S, k: &Q) -> u64
 where
     S: BuildHasher,
