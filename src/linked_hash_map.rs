@@ -51,7 +51,6 @@ pub struct LinkedHashMap<K, V, S = DefaultHashBuilder> {
 }
 
 impl<K, V> LinkedHashMap<K, V> {
-    #[inline]
     pub fn new() -> Self {
         Self {
             hash_builder: DefaultHashBuilder::default(),
@@ -61,7 +60,6 @@ impl<K, V> LinkedHashMap<K, V> {
         }
     }
 
-    #[inline]
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
             hash_builder: DefaultHashBuilder::default(),
@@ -73,7 +71,6 @@ impl<K, V> LinkedHashMap<K, V> {
 }
 
 impl<K, V, S> LinkedHashMap<K, V, S> {
-    #[inline]
     pub fn with_hasher(hash_builder: S) -> Self {
         Self {
             hash_builder,
@@ -83,7 +80,6 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn with_capacity_and_hasher(capacity: usize, hash_builder: S) -> Self {
         Self {
             hash_builder,
@@ -100,10 +96,9 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
 
     #[inline]
     pub fn is_empty(&self) -> bool {
-        self.len() == 0
+        self.table.is_empty()
     }
 
-    #[inline]
     pub fn clear(&mut self) {
         self.table.clear();
         if let Some(mut values) = self.values {
@@ -117,7 +112,6 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn iter(&self) -> Iter<K, V> {
         let (head, tail) = if let Some(values) = self.values {
             unsafe {
@@ -136,7 +130,6 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn iter_mut(&mut self) -> IterMut<K, V> {
         let (head, tail) = if let Some(values) = self.values {
             unsafe {
@@ -155,7 +148,6 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn drain(&mut self) -> Drain<'_, K, V> {
         unsafe {
             let (head, tail) = if let Some(mut values) = self.values {
@@ -182,17 +174,14 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn keys(&self) -> Keys<K, V> {
         Keys { inner: self.iter() }
     }
 
-    #[inline]
     pub fn values(&self) -> Values<K, V> {
         Values { inner: self.iter() }
     }
 
-    #[inline]
     pub fn values_mut(&mut self) -> ValuesMut<K, V> {
         ValuesMut {
             inner: self.iter_mut(),
@@ -223,7 +212,6 @@ impl<K, V, S> LinkedHashMap<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn retain<F>(&mut self, mut f: F)
     where
         F: FnMut(&K, &mut V) -> bool,
@@ -441,14 +429,12 @@ where
         }
     }
 
-    #[inline]
     pub fn reserve(&mut self, additional: usize) {
         let hash_builder = &self.hash_builder;
         self.table
             .reserve(additional, move |&n| unsafe { hash_node(hash_builder, n) });
     }
 
-    #[inline]
     pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError> {
         let hash_builder = &self.hash_builder;
         self.table
@@ -461,7 +447,6 @@ where
             })
     }
 
-    #[inline]
     pub fn shrink_to_fit(&mut self) {
         let hash_builder = &self.hash_builder;
         unsafe {
@@ -559,14 +544,12 @@ impl<K, V, S> Default for LinkedHashMap<K, V, S>
 where
     S: Default,
 {
-    #[inline]
     fn default() -> Self {
         Self::with_hasher(S::default())
     }
 }
 
 impl<K: Hash + Eq, V, S: BuildHasher + Default> FromIterator<(K, V)> for LinkedHashMap<K, V, S> {
-    #[inline]
     fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
         let iter = iter.into_iter();
         let mut map = Self::with_capacity_and_hasher(iter.size_hint().0, S::default());
@@ -580,14 +563,12 @@ where
     K: fmt::Debug,
     V: fmt::Debug,
 {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_map().entries(self).finish()
     }
 }
 
 impl<K: Hash + Eq, V: PartialEq, S: BuildHasher> PartialEq for LinkedHashMap<K, V, S> {
-    #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.len() == other.len() && self.iter().eq(other)
     }
@@ -598,41 +579,34 @@ impl<K: Hash + Eq, V: Eq, S: BuildHasher> Eq for LinkedHashMap<K, V, S> {}
 impl<K: Hash + Eq + PartialOrd, V: PartialOrd, S: BuildHasher> PartialOrd
     for LinkedHashMap<K, V, S>
 {
-    #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.iter().partial_cmp(other)
     }
 
-    #[inline]
     fn lt(&self, other: &Self) -> bool {
         self.iter().lt(other)
     }
 
-    #[inline]
     fn le(&self, other: &Self) -> bool {
         self.iter().le(other)
     }
 
-    #[inline]
     fn ge(&self, other: &Self) -> bool {
         self.iter().ge(other)
     }
 
-    #[inline]
     fn gt(&self, other: &Self) -> bool {
         self.iter().gt(other)
     }
 }
 
 impl<K: Hash + Eq + Ord, V: Ord, S: BuildHasher> Ord for LinkedHashMap<K, V, S> {
-    #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         self.iter().cmp(other)
     }
 }
 
 impl<K: Hash + Eq, V: Hash, S: BuildHasher> Hash for LinkedHashMap<K, V, S> {
-    #[inline]
     fn hash<H: Hasher>(&self, h: &mut H) {
         for e in self.iter() {
             e.hash(h);
@@ -641,7 +615,6 @@ impl<K: Hash + Eq, V: Hash, S: BuildHasher> Hash for LinkedHashMap<K, V, S> {
 }
 
 impl<K, V, S> Drop for LinkedHashMap<K, V, S> {
-    #[inline]
     fn drop(&mut self) {
         unsafe {
             if let Some(values) = self.values {
@@ -683,7 +656,6 @@ where
 }
 
 impl<K: Hash + Eq + Clone, V: Clone, S: BuildHasher + Clone> Clone for LinkedHashMap<K, V, S> {
-    #[inline]
     fn clone(&self) -> Self {
         let mut map = Self::with_hasher(self.hash_builder.clone());
         map.extend(self.iter().map(|(k, v)| (k.clone(), v.clone())));
@@ -692,7 +664,6 @@ impl<K: Hash + Eq + Clone, V: Clone, S: BuildHasher + Clone> Clone for LinkedHas
 }
 
 impl<K: Hash + Eq, V, S: BuildHasher> Extend<(K, V)> for LinkedHashMap<K, V, S> {
-    #[inline]
     fn extend<I: IntoIterator<Item = (K, V)>>(&mut self, iter: I) {
         for (k, v) in iter {
             self.insert(k, v);
@@ -706,7 +677,6 @@ where
     V: 'a + Copy,
     S: BuildHasher,
 {
-    #[inline]
     fn extend<I: IntoIterator<Item = (&'a K, &'a V)>>(&mut self, iter: I) {
         for (&k, &v) in iter {
             self.insert(k, v);
@@ -720,7 +690,6 @@ pub enum Entry<'a, K, V, S> {
 }
 
 impl<K: fmt::Debug, V: fmt::Debug, S> fmt::Debug for Entry<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             Entry::Vacant(ref v) => f.debug_tuple("Entry").field(v).finish(),
@@ -796,7 +765,6 @@ pub struct OccupiedEntry<'a, K, V, S> {
 }
 
 impl<K: fmt::Debug, V: fmt::Debug, S> fmt::Debug for OccupiedEntry<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("OccupiedEntry")
             .field("key", self.key())
@@ -899,7 +867,6 @@ pub struct VacantEntry<'a, K, V, S> {
 }
 
 impl<K: fmt::Debug, V, S> fmt::Debug for VacantEntry<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("VacantEntry").field(self.key()).finish()
     }
@@ -1275,14 +1242,12 @@ impl<'a, K, V, S> RawVacantEntryMut<'a, K, V, S> {
 }
 
 impl<K, V, S> fmt::Debug for RawEntryBuilderMut<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("RawEntryBuilder").finish()
     }
 }
 
 impl<K: fmt::Debug, V: fmt::Debug, S> fmt::Debug for RawEntryMut<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             RawEntryMut::Vacant(ref v) => f.debug_tuple("RawEntry").field(v).finish(),
@@ -1292,7 +1257,6 @@ impl<K: fmt::Debug, V: fmt::Debug, S> fmt::Debug for RawEntryMut<'_, K, V, S> {
 }
 
 impl<K: fmt::Debug, V: fmt::Debug, S> fmt::Debug for RawOccupiedEntryMut<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("RawOccupiedEntryMut")
             .field("key", self.key())
@@ -1302,14 +1266,12 @@ impl<K: fmt::Debug, V: fmt::Debug, S> fmt::Debug for RawOccupiedEntryMut<'_, K, 
 }
 
 impl<K, V, S> fmt::Debug for RawVacantEntryMut<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("RawVacantEntryMut").finish()
     }
 }
 
 impl<K, V, S> fmt::Debug for RawEntryBuilder<'_, K, V, S> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("RawEntryBuilder").finish()
     }
@@ -1378,7 +1340,6 @@ pub struct Drain<'a, K, V> {
 }
 
 impl<K, V> IterMut<'_, K, V> {
-    #[inline]
     pub(crate) fn iter(&self) -> Iter<'_, K, V> {
         Iter {
             head: self.head.as_ptr(),
@@ -1390,7 +1351,6 @@ impl<K, V> IterMut<'_, K, V> {
 }
 
 impl<K, V> IntoIter<K, V> {
-    #[inline]
     pub(crate) fn iter(&self) -> Iter<'_, K, V> {
         Iter {
             head: self.head.as_ptr(),
@@ -1402,7 +1362,6 @@ impl<K, V> IntoIter<K, V> {
 }
 
 impl<K, V> Drain<'_, K, V> {
-    #[inline]
     pub(crate) fn iter(&self) -> Iter<'_, K, V> {
         Iter {
             head: self.head.as_ptr(),
@@ -1470,14 +1429,12 @@ where
 }
 
 impl<K, V> Clone for Iter<'_, K, V> {
-    #[inline]
     fn clone(&self) -> Self {
         Iter { ..*self }
     }
 }
 
 impl<K: fmt::Debug, V: fmt::Debug> fmt::Debug for Iter<'_, K, V> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.clone()).finish()
     }
@@ -1488,7 +1445,6 @@ where
     K: fmt::Debug,
     V: fmt::Debug,
 {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.iter()).finish()
     }
@@ -1499,7 +1455,6 @@ where
     K: fmt::Debug,
     V: fmt::Debug,
 {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.iter()).finish()
     }
@@ -1510,7 +1465,6 @@ where
     K: fmt::Debug,
     V: fmt::Debug,
 {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.iter()).finish()
     }
@@ -1683,7 +1637,6 @@ impl<K, V> ExactSizeIterator for IterMut<'_, K, V> {}
 impl<K, V> ExactSizeIterator for IntoIter<K, V> {}
 
 impl<K, V> Drop for IntoIter<K, V> {
-    #[inline]
     fn drop(&mut self) {
         for _ in 0..self.remaining {
             unsafe {
@@ -1697,15 +1650,12 @@ impl<K, V> Drop for IntoIter<K, V> {
 }
 
 impl<K, V> Drop for Drain<'_, K, V> {
-    #[inline]
     fn drop(&mut self) {
-        for _ in 0..self.remaining {
-            unsafe {
-                let mut tail = NonNull::new_unchecked(self.tail.as_ptr());
-                self.tail = Some(tail.as_ref().links.value.prev);
-                tail.as_mut().take_entry();
-                push_free(&mut *self.free.as_ptr(), tail);
-            }
+        unsafe {
+            let mut tail = NonNull::new_unchecked(self.tail.as_ptr());
+            self.tail = Some(tail.as_ref().links.value.prev);
+            tail.as_mut().take_entry();
+            push_free(&mut *self.free.as_ptr(), tail);
         }
     }
 }
@@ -1877,14 +1827,12 @@ pub struct Keys<'a, K, V> {
 }
 
 impl<K: fmt::Debug, V> fmt::Debug for Keys<'_, K, V> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.clone()).finish()
     }
 }
 
 impl<'a, K, V> Clone for Keys<'a, K, V> {
-    #[inline]
     fn clone(&self) -> Keys<'a, K, V> {
         Keys {
             inner: self.inner.clone(),
@@ -1925,7 +1873,6 @@ pub struct Values<'a, K, V> {
 }
 
 impl<K, V> Clone for Values<'_, K, V> {
-    #[inline]
     fn clone(&self) -> Self {
         Values {
             inner: self.inner.clone(),
@@ -1934,7 +1881,6 @@ impl<K, V> Clone for Values<'_, K, V> {
 }
 
 impl<K, V: fmt::Debug> fmt::Debug for Values<'_, K, V> {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.clone()).finish()
     }
@@ -1977,7 +1923,6 @@ where
     K: fmt::Debug,
     V: fmt::Debug,
 {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.inner.iter()).finish()
     }
@@ -2015,7 +1960,6 @@ impl<'a, K, V, S> IntoIterator for &'a LinkedHashMap<K, V, S> {
     type Item = (&'a K, &'a V);
     type IntoIter = Iter<'a, K, V>;
 
-    #[inline]
     fn into_iter(self) -> Iter<'a, K, V> {
         self.iter()
     }
@@ -2025,7 +1969,6 @@ impl<'a, K, V, S> IntoIterator for &'a mut LinkedHashMap<K, V, S> {
     type Item = (&'a K, &'a mut V);
     type IntoIter = IterMut<'a, K, V>;
 
-    #[inline]
     fn into_iter(self) -> IterMut<'a, K, V> {
         self.iter_mut()
     }
@@ -2035,7 +1978,6 @@ impl<K, V, S> IntoIterator for LinkedHashMap<K, V, S> {
     type Item = (K, V);
     type IntoIter = IntoIter<K, V>;
 
-    #[inline]
     fn into_iter(mut self) -> IntoIter<K, V> {
         unsafe {
             let (head, tail) = if let Some(values) = self.values {
@@ -2073,7 +2015,6 @@ struct ValueLinks<K, V> {
 }
 
 impl<K, V> Clone for ValueLinks<K, V> {
-    #[inline]
     fn clone(&self) -> Self {
         *self
     }
@@ -2086,7 +2027,6 @@ struct FreeLink<K, V> {
 }
 
 impl<K, V> Clone for FreeLink<K, V> {
-    #[inline]
     fn clone(&self) -> Self {
         *self
     }
@@ -2292,7 +2232,6 @@ struct DropFilteredValues<'a, K, V> {
 }
 
 impl<K, V> DropFilteredValues<'_, K, V> {
-    #[inline]
     fn drop_later(&mut self, node: NonNull<Node<K, V>>) {
         unsafe {
             detach_node(node);
