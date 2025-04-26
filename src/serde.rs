@@ -50,12 +50,6 @@ where
             }
         }
 
-        impl<K, V, S> Default for LinkedHashMapVisitor<K, V, S> {
-            fn default() -> Self {
-                Self::new()
-            }
-        }
-
         impl<'de, K, V, S> Visitor<'de> for LinkedHashMapVisitor<K, V, S>
         where
             K: Deserialize<'de> + Eq + Hash,
@@ -83,7 +77,7 @@ where
             }
         }
 
-        deserializer.deserialize_map(LinkedHashMapVisitor::default())
+        deserializer.deserialize_map(LinkedHashMapVisitor::new())
     }
 }
 
@@ -122,12 +116,6 @@ where
             }
         }
 
-        impl<T, S> Default for LinkedHashSetVisitor<T, S> {
-            fn default() -> Self {
-                Self::new()
-            }
-        }
-
         impl<'de, T, S> Visitor<'de> for LinkedHashSetVisitor<T, S>
         where
             T: Deserialize<'de> + Eq + Hash,
@@ -139,7 +127,6 @@ where
                 write!(formatter, "a sequence")
             }
 
-            #[inline]
             fn visit_seq<SA: SeqAccess<'de>>(self, mut seq: SA) -> Result<Self::Value, SA::Error> {
                 let mut values = LinkedHashSet::with_capacity_and_hasher(
                     seq.size_hint().unwrap_or(0),
@@ -154,6 +141,6 @@ where
             }
         }
 
-        deserializer.deserialize_seq(LinkedHashSetVisitor::default())
+        deserializer.deserialize_seq(LinkedHashSetVisitor::new())
     }
 }
