@@ -923,7 +923,6 @@ where
         self.from_hash(hash, move |o| k.eq(o.borrow()))
     }
 
-    #[inline]
     pub fn from_hash(
         self,
         hash: u64,
@@ -968,7 +967,6 @@ where
         self.from_hash(hash, move |o| k.eq(o.borrow()))
     }
 
-    #[inline]
     pub fn from_hash(
         self,
         hash: u64,
