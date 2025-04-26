@@ -2209,6 +2209,7 @@ where
     hash_key(s, node.as_ref().key_ref())
 }
 
+#[inline]
 fn hash_key<S, Q>(s: &S, k: &Q) -> u64
 where
     S: BuildHasher,
