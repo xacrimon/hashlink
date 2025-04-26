@@ -2088,6 +2088,7 @@ impl<T> OptNonNullExt<T> for Option<NonNull<T>> {
 #[inline]
 unsafe fn ensure_guard_node<K, V>(head: &mut Option<NonNull<Node<K, V>>>) {
     #[cold]
+    #[inline(never)]
     unsafe fn initialize<K,V>(head: &mut Option<NonNull<Node<K, V>>>) {
         let mut p = NonNull::new_unchecked(Box::into_raw(Box::new(Node {
             entry: MaybeUninit::uninit(),
@@ -2170,6 +2171,7 @@ unsafe fn allocate_node<K, V>(free_list: &mut Option<NonNull<Node<K, V>>>) -> No
 }
 
 // Given node is assumed to be the guard node and is *not* dropped.
+#[inline(never)]
 unsafe fn drop_value_nodes<K, V>(guard: NonNull<Node<K, V>>) {
     let mut cur = guard.as_ref().links.value.prev;
     while cur != guard {
@@ -2182,6 +2184,7 @@ unsafe fn drop_value_nodes<K, V>(guard: NonNull<Node<K, V>>) {
 
 // Drops all linked free nodes starting with the given node.  Free nodes are only non-circular
 // singly linked, and should have uninitialized keys / values.
+#[inline(never)]
 unsafe fn drop_free_nodes<K, V>(mut free: Option<NonNull<Node<K, V>>>) {
     while let Some(some_free) = free {
         let next_free = some_free.as_ref().links.free.next;
