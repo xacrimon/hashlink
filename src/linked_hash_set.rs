@@ -1,4 +1,4 @@
-use core::{
+use std::{
     borrow::Borrow,
     fmt,
     hash::{BuildHasher, Hash, Hasher},

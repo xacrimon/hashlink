@@ -1,4 +1,4 @@
-use core::{
+use std::{
     alloc::Layout,
     borrow::Borrow,
     cmp::Ordering,
