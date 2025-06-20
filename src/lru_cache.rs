@@ -41,17 +41,14 @@ impl<K, V, S> LruCache<K, V, S> {
         }
     }
 
-    #[inline]
     pub fn capacity(&self) -> usize {
         self.max_size
     }
 
-    #[inline]
     pub fn len(&self) -> usize {
         self.map.len()
     }
 
-    #[inline]
     pub fn is_empty(&self) -> bool {
         self.map.is_empty()
     }
@@ -84,7 +81,6 @@ impl<K: Eq + Hash, V, S> LruCache<K, V, S>
 where
     S: BuildHasher,
 {
-    #[inline]
     pub fn contains_key<Q>(&self, key: &Q) -> bool
     where
         K: Borrow<Q>,
@@ -96,7 +92,6 @@ where
     /// Insert a new value into the `LruCache`.
     ///
     /// If necessary, will remove the value at the front of the LRU list to make room.
-    #[inline]
     pub fn insert(&mut self, k: K, v: V) -> Option<V> {
         let old_val = self.map.insert(k, v);
         if self.len() > self.capacity() {
@@ -107,7 +102,6 @@ where
 
     /// Get the value for the given key, *without* marking the value as recently used and moving it
     /// to the back of the LRU list.
-    #[inline]
     pub fn peek<Q>(&self, k: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -118,7 +112,6 @@ where
 
     /// Get the value for the given key mutably, *without* marking the value as recently used and
     /// moving it to the back of the LRU list.
-    #[inline]
     pub fn peek_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
@@ -129,7 +122,6 @@ where
 
     /// Retrieve the given key, marking it as recently used and moving it to the back of the LRU
     /// list.
-    #[inline]
     pub fn get<Q>(&mut self, k: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -140,7 +132,6 @@ where
 
     /// Retrieve the given key, marking it as recently used and moving it to the back of the LRU
     /// list.
-    #[inline]
     pub fn get_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
@@ -161,7 +152,6 @@ where
     /// The returned entry is not automatically moved to the back of the LRU list.  By calling
     /// `Entry::to_back` / `Entry::to_front` you can manually control the position of this entry in
     /// the LRU list.
-    #[inline]
     pub fn entry(&mut self, key: K) -> Entry<'_, K, V, S> {
         if self.len() > self.capacity() {
             self.remove_lru();
@@ -172,7 +162,6 @@ where
     /// The constructed raw entry is never automatically moved to the back of the LRU list.  By
     /// calling `Entry::to_back` / `Entry::to_front` you can manually control the position of this
     /// entry in the LRU list.
-    #[inline]
     pub fn raw_entry(&self) -> RawEntryBuilder<'_, K, V, S> {
         self.map.raw_entry()
     }
@@ -183,7 +172,6 @@ where
     /// The constructed raw entry is never automatically moved to the back of the LRU list.  By
     /// calling `Entry::to_back` / `Entry::to_front` you can manually control the position of this
     /// entry in the LRU list.
-    #[inline]
     pub fn raw_entry_mut(&mut self) -> RawEntryBuilderMut<'_, K, V, S> {
         if self.len() > self.capacity() {
             self.remove_lru();
@@ -191,7 +179,6 @@ where
         self.map.raw_entry_mut()
     }
 
-    #[inline]
     pub fn remove<Q>(&mut self, k: &Q) -> Option<V>
     where
         K: Borrow<Q>,
@@ -200,7 +187,6 @@ where
         self.map.remove(k)
     }
 
-    #[inline]
     pub fn remove_entry<Q>(&mut self, k: &Q) -> Option<(K, V)>
     where
         K: Borrow<Q>,
@@ -223,7 +209,6 @@ where
     /// Remove the least recently used entry and return it.
     ///
     /// If the `LruCache` is empty this will return None.
-    #[inline]
     pub fn remove_lru(&mut self) -> Option<(K, V)> {
         self.map.pop_front()
     }

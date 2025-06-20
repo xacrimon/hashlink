@@ -68,7 +68,6 @@ where
                 write!(formatter, "a map")
             }
 
-            #[inline]
             fn visit_map<M: MapAccess<'de>>(self, mut map: M) -> Result<Self::Value, M::Error> {
                 let mut values = LinkedHashMap::with_capacity_and_hasher(
                     map.size_hint().unwrap_or(0),
@@ -139,7 +138,6 @@ where
                 write!(formatter, "a sequence")
             }
 
-            #[inline]
             fn visit_seq<SA: SeqAccess<'de>>(self, mut seq: SA) -> Result<Self::Value, SA::Error> {
                 let mut values = LinkedHashSet::with_capacity_and_hasher(
                     seq.size_hint().unwrap_or(0),

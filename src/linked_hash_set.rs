@@ -28,7 +28,6 @@ impl<T: Hash + Eq> LinkedHashSet<T, DefaultHashBuilder> {
 }
 
 impl<T, S> LinkedHashSet<T, S> {
-    #[inline]
     pub fn capacity(&self) -> usize {
         self.map.capacity()
     }
@@ -39,12 +38,10 @@ impl<T, S> LinkedHashSet<T, S> {
         }
     }
 
-    #[inline]
     pub fn len(&self) -> usize {
         self.map.len()
     }
 
-    #[inline]
     pub fn is_empty(&self) -> bool {
         self.map.is_empty()
     }
@@ -84,7 +81,6 @@ where
         }
     }
 
-    #[inline]
     pub fn hasher(&self) -> &S {
         self.map.hasher()
     }
@@ -130,7 +126,6 @@ where
         }
     }
 
-    #[inline]
     pub fn contains<Q>(&self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -139,7 +134,6 @@ where
         self.map.contains_key(value)
     }
 
-    #[inline]
     pub fn get<Q>(&self, value: &Q) -> Option<&T>
     where
         T: Borrow<Q>,
@@ -148,7 +142,6 @@ where
         self.map.raw_entry().from_key(value).map(|p| p.0)
     }
 
-    #[inline]
     pub fn get_or_insert(&mut self, value: T) -> &T {
         self.map
             .raw_entry_mut()
@@ -157,7 +150,6 @@ where
             .0
     }
 
-    #[inline]
     pub fn get_or_insert_with<Q, F>(&mut self, value: &Q, f: F) -> &T
     where
         T: Borrow<Q>,
@@ -188,7 +180,6 @@ where
     /// If the set did not have this value present, inserts it at the *back* of the internal linked
     /// list and returns true, otherwise it moves the existing value to the *back* of the internal
     /// linked list and returns false.
-    #[inline]
     pub fn insert(&mut self, value: T) -> bool {
         self.map.insert(value, ()).is_none()
     }
@@ -197,7 +188,6 @@ where
     ///
     /// If a previous value existed, returns the replaced value.  In this case, the value's position
     /// in the internal linked list is *not* changed.
-    #[inline]
     pub fn replace(&mut self, value: T) -> Option<T> {
         match self.map.entry(value) {
             linked_hash_map::Entry::Occupied(occupied) => Some(occupied.replace_key()),
@@ -208,7 +198,6 @@ where
         }
     }
 
-    #[inline]
     pub fn remove<Q>(&mut self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -217,7 +206,6 @@ where
         self.map.remove(value).is_some()
     }
 
-    #[inline]
     pub fn take<Q>(&mut self, value: &Q) -> Option<T>
     where
         T: Borrow<Q>,
@@ -229,27 +217,22 @@ where
         }
     }
 
-    #[inline]
     pub fn front(&self) -> Option<&T> {
         self.map.front().map(|(k, _)| k)
     }
 
-    #[inline]
     pub fn pop_front(&mut self) -> Option<T> {
         self.map.pop_front().map(|(k, _)| k)
     }
 
-    #[inline]
     pub fn back(&self) -> Option<&T> {
         self.map.back().map(|(k, _)| k)
     }
 
-    #[inline]
     pub fn pop_back(&mut self) -> Option<T> {
         self.map.pop_back().map(|(k, _)| k)
     }
 
-    #[inline]
     pub fn to_front<Q>(&mut self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -264,7 +247,6 @@ where
         }
     }
 
-    #[inline]
     pub fn to_back<Q>(&mut self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -483,12 +465,10 @@ impl<'a, K> Clone for Iter<'a, K> {
 impl<'a, K> Iterator for Iter<'a, K> {
     type Item = &'a K;
 
-    #[inline]
     fn next(&mut self) -> Option<&'a K> {
         self.iter.next()
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
@@ -497,7 +477,6 @@ impl<'a, K> Iterator for Iter<'a, K> {
 impl<K> ExactSizeIterator for Iter<'_, K> {}
 
 impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
-    #[inline]
     fn next_back(&mut self) -> Option<&'a T> {
         self.iter.next_back()
     }
@@ -512,12 +491,10 @@ impl<K: fmt::Debug> fmt::Debug for Iter<'_, K> {
 impl<K> Iterator for IntoIter<K> {
     type Item = K;
 
-    #[inline]
     fn next(&mut self) -> Option<K> {
         self.iter.next().map(|(k, _)| k)
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
@@ -526,7 +503,6 @@ impl<K> Iterator for IntoIter<K> {
 impl<K> ExactSizeIterator for IntoIter<K> {}
 
 impl<K> DoubleEndedIterator for IntoIter<K> {
-    #[inline]
     fn next_back(&mut self) -> Option<K> {
         self.iter.next_back().map(|(k, _)| k)
     }
@@ -535,19 +511,16 @@ impl<K> DoubleEndedIterator for IntoIter<K> {
 impl<K> Iterator for Drain<'_, K> {
     type Item = K;
 
-    #[inline]
     fn next(&mut self) -> Option<K> {
         self.iter.next().map(|(k, _)| k)
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
 }
 
 impl<K> DoubleEndedIterator for Drain<'_, K> {
-    #[inline]
     fn next_back(&mut self) -> Option<K> {
         self.iter.next_back().map(|(k, _)| k)
     }
@@ -571,7 +544,6 @@ where
 {
     type Item = &'a T;
 
-    #[inline]
     fn next(&mut self) -> Option<&'a T> {
         loop {
             match self.iter.next() {
@@ -585,7 +557,6 @@ where
         }
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let (_, upper) = self.iter.size_hint();
         (0, upper)
@@ -618,7 +589,6 @@ where
 {
     type Item = &'a T;
 
-    #[inline]
     fn next(&mut self) -> Option<&'a T> {
         loop {
             match self.iter.next() {
@@ -632,7 +602,6 @@ where
         }
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let (_, upper) = self.iter.size_hint();
         (0, upper)
@@ -664,12 +633,10 @@ where
 {
     type Item = &'a T;
 
-    #[inline]
     fn next(&mut self) -> Option<&'a T> {
         self.iter.next()
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
@@ -710,12 +677,10 @@ where
 {
     type Item = &'a T;
 
-    #[inline]
     fn next(&mut self) -> Option<&'a T> {
         self.iter.next()
     }
 
-    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
     }
