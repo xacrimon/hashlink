@@ -1,4 +1,4 @@
-use hashlink::LruCache;
+use hashlink2::LruCache;
 
 #[test]
 fn test_put_and_get() {

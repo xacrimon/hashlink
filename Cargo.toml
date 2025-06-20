@@ -1,18 +1,15 @@
 [package]
-name = "hashlink"
-version = "0.10.0"
-authors = ["kyren <kerriganw@gmail.com>"]
+name = "hashlink2"
+version = "0.1.0"
+authors = ["Joel Wejdenstål <joel.wejdenstal@gmail.com>"]
 edition = "2024"
 description = "HashMap-like containers that hold their key-value pairs in a user controllable order"
-repository = "https://github.com/kyren/hashlink"
-documentation = "https://docs.rs/hashlink"
+repository = "https://github.com/xacrimon/hashlink2"
+#documentation = "https://docs.rs/hashlink2"
 readme = "README.md"
 keywords = ["data-structures"]
 license = "MIT OR Apache-2.0"
 rust-version = "1.87"
-
-[badges]
-circle-ci = { repository = "kyren/hashlink", branch = "master" }
 
 [features]
 serde_impl = ["dep:serde"]

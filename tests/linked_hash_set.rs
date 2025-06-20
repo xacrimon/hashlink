@@ -1,5 +1,5 @@
-use hashlink::DefaultHashBuilder;
-use hashlink::linked_hash_set::{self, LinkedHashSet};
+use hashlink2::DefaultHashBuilder;
+use hashlink2::linked_hash_set::{self, LinkedHashSet};
 
 #[allow(dead_code)]
 fn assert_covariance() {

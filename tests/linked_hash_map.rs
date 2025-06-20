@@ -1,4 +1,4 @@
-use hashlink::{LinkedHashMap, linked_hash_map};
+use hashlink2::{LinkedHashMap, linked_hash_map};
 
 #[allow(dead_code)]
 fn assert_covariance() {
