@@ -11,7 +11,7 @@ use core::{
     ptr::{self, NonNull},
 };
 
-use alloc::boxed::Box;
+use std::boxed::Box;
 use hashbrown::hash_table::{self, HashTable};
 
 use crate::DefaultHashBuilder;

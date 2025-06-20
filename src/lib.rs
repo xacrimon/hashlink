@@ -1,6 +1,3 @@
-#![no_std]
-extern crate alloc;
-
 pub mod linked_hash_map;
 pub mod linked_hash_set;
 pub mod lru_cache;
@@ -16,8 +13,8 @@ pub use lru_cache::LruCache;
 /// Default hash builder, matches hashbrown's default hasher.
 ///
 /// See [`DefaultHasher`] for more details.
-#[derive(Clone, Copy, Default, Debug)]
-pub struct DefaultHashBuilder(hashbrown::DefaultHashBuilder);
+#[derive(Clone, Default, Debug)]
+pub struct DefaultHashBuilder(std::collections::hash_map::RandomState);
 
 impl BuildHasher for DefaultHashBuilder {
     type Hasher = DefaultHasher;
@@ -30,7 +27,7 @@ impl BuildHasher for DefaultHashBuilder {
 
 /// Default hasher, as selected by hashbrown.
 #[derive(Clone)]
-pub struct DefaultHasher(<hashbrown::DefaultHashBuilder as BuildHasher>::Hasher);
+pub struct DefaultHasher(<std::collections::hash_map::RandomState as BuildHasher>::Hasher);
 
 impl Hasher for DefaultHasher {
     #[inline(always)]

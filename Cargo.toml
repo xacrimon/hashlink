@@ -2,14 +2,14 @@
 name = "hashlink"
 version = "0.10.0"
 authors = ["kyren <kerriganw@gmail.com>"]
-edition = "2021"
+edition = "2024"
 description = "HashMap-like containers that hold their key-value pairs in a user controllable order"
 repository = "https://github.com/kyren/hashlink"
 documentation = "https://docs.rs/hashlink"
 readme = "README.md"
 keywords = ["data-structures", "no_std"]
 license = "MIT OR Apache-2.0"
-rust-version = "1.65"
+rust-version = "1.87"
 
 [badges]
 circle-ci = { repository = "kyren/hashlink", branch = "master" }
@@ -18,7 +18,7 @@ circle-ci = { repository = "kyren/hashlink", branch = "master" }
 serde_impl = ["dep:serde"]
 
 [dependencies]
-hashbrown = { version = "0.15", default-features = false, features = ["default-hasher"] }
+hashbrown = { version = "0.15", default-features = false }
 serde = { version = "1.0", default-features = false, optional = true }
 
 [dev-dependencies]
