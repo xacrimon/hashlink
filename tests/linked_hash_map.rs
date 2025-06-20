@@ -1,4 +1,4 @@
-use hashlink::{linked_hash_map, LinkedHashMap};
+use hashlink::{LinkedHashMap, linked_hash_map};
 
 #[allow(dead_code)]
 fn assert_covariance() {
@@ -521,24 +521,27 @@ fn test_replace() {
     map.insert(3, 3);
     map.insert(4, 4);
 
-    assert!(map
-        .iter()
-        .map(|(k, v)| (*k, *v))
-        .eq([(1, 1), (2, 2), (3, 3), (4, 4)].iter().copied()));
+    assert!(
+        map.iter()
+            .map(|(k, v)| (*k, *v))
+            .eq([(1, 1), (2, 2), (3, 3), (4, 4)].iter().copied())
+    );
 
     map.insert(3, 5);
 
-    assert!(map
-        .iter()
-        .map(|(k, v)| (*k, *v))
-        .eq([(1, 1), (2, 2), (4, 4), (3, 5)].iter().copied()));
+    assert!(
+        map.iter()
+            .map(|(k, v)| (*k, *v))
+            .eq([(1, 1), (2, 2), (4, 4), (3, 5)].iter().copied())
+    );
 
     map.replace(2, 6);
 
-    assert!(map
-        .iter()
-        .map(|(k, v)| (*k, *v))
-        .eq([(1, 1), (2, 6), (4, 4), (3, 5)].iter().copied()));
+    assert!(
+        map.iter()
+            .map(|(k, v)| (*k, *v))
+            .eq([(1, 1), (2, 6), (4, 4), (3, 5)].iter().copied())
+    );
 }
 
 #[test]
@@ -705,10 +708,11 @@ fn test_cursor_mut_insert_before() {
     // Insert new element in the middle
     if let linked_hash_map::Entry::Occupied(entry) = map.entry(4) {
         entry.cursor_mut().insert_before(5, 5);
-        assert!(map
-            .iter()
-            .map(|(k, v)| (*k, *v))
-            .eq([(3, 3), (5, 5), (4, 4)].iter().copied()));
+        assert!(
+            map.iter()
+                .map(|(k, v)| (*k, *v))
+                .eq([(3, 3), (5, 5), (4, 4)].iter().copied())
+        );
     }
 
     // Insert new element at the very end of the list
@@ -716,19 +720,21 @@ fn test_cursor_mut_insert_before() {
         let mut cursor = entry.cursor_mut();
         cursor.move_prev();
         cursor.insert_before(6, 6);
-        assert!(map
-            .iter()
-            .map(|(k, v)| (*k, *v))
-            .eq([(3, 3), (5, 5), (4, 4), (6, 6)].iter().copied()));
+        assert!(
+            map.iter()
+                .map(|(k, v)| (*k, *v))
+                .eq([(3, 3), (5, 5), (4, 4), (6, 6)].iter().copied())
+        );
     }
 
     // Relocate element and override value
     if let linked_hash_map::Entry::Occupied(entry) = map.entry(5) {
         entry.cursor_mut().insert_before(4, 42);
-        assert!(map
-            .iter()
-            .map(|(k, v)| (*k, *v))
-            .eq([(3, 3), (4, 42), (5, 5), (6, 6)].iter().copied()));
+        assert!(
+            map.iter()
+                .map(|(k, v)| (*k, *v))
+                .eq([(3, 3), (4, 42), (5, 5), (6, 6)].iter().copied())
+        );
     }
 }
 
@@ -742,10 +748,11 @@ fn test_cursor_mut_insert_after() {
     // Insert new element in the middle.
     if let linked_hash_map::Entry::Occupied(entry) = map.entry(3) {
         entry.cursor_mut().insert_after(5, 5);
-        assert!(map
-            .iter()
-            .map(|(k, v)| (*k, *v))
-            .eq([(3, 3), (5, 5), (4, 4)].iter().copied()));
+        assert!(
+            map.iter()
+                .map(|(k, v)| (*k, *v))
+                .eq([(3, 3), (5, 5), (4, 4)].iter().copied())
+        );
     }
 
     // Insert new element as the first one.
@@ -753,10 +760,11 @@ fn test_cursor_mut_insert_after() {
         let mut cursor = entry.cursor_mut();
         cursor.move_next();
         cursor.insert_after(6, 6);
-        assert!(map
-            .iter()
-            .map(|(k, v)| (*k, *v))
-            .eq([(6, 6), (3, 3), (5, 5), (4, 4)].iter().copied()));
+        assert!(
+            map.iter()
+                .map(|(k, v)| (*k, *v))
+                .eq([(6, 6), (3, 3), (5, 5), (4, 4)].iter().copied())
+        );
     }
 }
 
@@ -772,10 +780,11 @@ fn test_cursor_mut_insert_before_itself() {
     // handled explicitly.
     if let linked_hash_map::Entry::Occupied(entry) = map.entry(3) {
         entry.cursor_mut().insert_before(3, 5);
-        assert!(map
-            .iter()
-            .map(|(k, v)| (*k, *v))
-            .eq([(2, 2), (3, 5), (4, 4)].iter().copied()));
+        assert!(
+            map.iter()
+                .map(|(k, v)| (*k, *v))
+                .eq([(2, 2), (3, 5), (4, 4)].iter().copied())
+        );
     }
 }
 
@@ -795,10 +804,11 @@ fn test_cursor_front_mut() {
     cursor.move_next();
     assert!(cursor.current().is_none());
 
-    assert!(map
-        .iter()
-        .map(|(k, v)| (*k, *v))
-        .eq([(1, 1)].iter().copied()));
+    assert!(
+        map.iter()
+            .map(|(k, v)| (*k, *v))
+            .eq([(1, 1)].iter().copied())
+    );
 
     map.insert(2, 2);
     map.insert(3, 3);

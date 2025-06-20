@@ -11,8 +11,8 @@ use core::{
     ptr::{self, NonNull},
 };
 
-use std::boxed::Box;
 use hashbrown::hash_table::{self, HashTable};
+use std::boxed::Box;
 
 use crate::DefaultHashBuilder;
 
