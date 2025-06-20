@@ -7,7 +7,7 @@ description = "HashMap-like containers that hold their key-value pairs in a user
 repository = "https://github.com/kyren/hashlink"
 documentation = "https://docs.rs/hashlink"
 readme = "README.md"
-keywords = ["data-structures", "no_std"]
+keywords = ["data-structures"]
 license = "MIT OR Apache-2.0"
 rust-version = "1.87"
 
